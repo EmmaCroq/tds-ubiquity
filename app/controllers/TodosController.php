@@ -10,6 +10,10 @@ use Ubiquity\utils\http\USession;
  * Controller TodosController
  */
 class TodosController extends ControllerBase{
+    const CACHE_KEY = 'datas/lists/';
+    const EMPTY_LIST_ID = 'not saved';
+    const LIST_SESSION_KEY = 'list';
+    const ACTIVE_LIST_SESSION_KEY = 'active-lsit';
 
     public function initialize()
     {
@@ -17,9 +21,23 @@ class TodosController extends ControllerBase{
         $this->menu();
     }
 
+    private function menu(){
+
+        $this->loadView('TodosController/menu.html');
+
+    }
+
     #[Route(path: "/_default/", name: 'home')]
     public function index(){
+        if(USession::exists(self::LIST_SESSION_KEY)){
+            $list = USession::get(self::LIST_SESSION_KEY, []);
+            return $this->display($list);
+        }
+        $this->showMessage('Bienvenue !', 'TodoLists permet de générer des listes ...', 'info', 'info circle outline', [['url' => Router::path('todos.new'), 'caption' => 'Créer une nouvelle liste', 'style' => 'basic inverted']]);
+    }
 
+    private function displayList(array $list){
+        $this->loadView('TodosController/display.html', ['list' => $list]);
     }
 
     #[Post(path: "todos/add", name: 'todos.add')]
@@ -62,11 +80,5 @@ class TodosController extends ControllerBase{
     public function saveList(){
 
     }
-	
-	public function menu(){
-		
-		$this->loadView('TodosController/menu.html');
-
-	}
 
 }
