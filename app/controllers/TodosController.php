@@ -33,7 +33,8 @@ class TodosController extends ControllerBase{
             $list = USession::get(self::LIST_SESSION_KEY, []);
             return $this->display($list);
         }
-        $this->showMessage('Bienvenue !', 'TodoLists permet de générer des listes ...', 'info', 'info circle outline', [['url' => Router::path('todos.new'), 'caption' => 'Créer une nouvelle liste', 'style' => 'basic inverted']]);
+        $this->showMessage('Bienvenue !', 'TodoLists permet de générer des listes ...', 'info',
+            'info circle outline', [['url' => Router::path('todos.new'), 'caption' => 'Créer une nouvelle liste', 'style' => 'basic inverted']]);
     }
 
     private function displayList(array $list){
@@ -42,7 +43,17 @@ class TodosController extends ControllerBase{
 
     #[Post(path: "todos/add", name: 'todos.add')]
     public function addElement(){
-
+        $list=USession::get(self::LIST_SESSION_KEY);
+        if(URequest::has('elements')){
+            $elements=explode("/n",URequest::post('elements'));
+            foreach ($elements as $elm){
+                $list[]=$elm;
+            }
+        }else {
+            $list[] = URequest::post('elements');
+        }
+        USession::set(self::LIST_SESSION_KEY,$list);
+        $this->displayList($list);
     }
 
 
