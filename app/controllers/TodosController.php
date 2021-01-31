@@ -13,18 +13,12 @@ class TodosController extends ControllerBase{
     const CACHE_KEY = 'datas/lists/';
     const EMPTY_LIST_ID = 'not saved';
     const LIST_SESSION_KEY = 'list';
-    const ACTIVE_LIST_SESSION_KEY = 'active-lsit';
+    const ACTIVE_LIST_SESSION_KEY = 'active-list';
 
     public function initialize()
     {
         parent::initialize();
         $this->menu();
-    }
-
-    private function menu(){
-
-        $this->loadView('TodosController/menu.html');
-
     }
 
     #[Route(path: "/_default/", name: 'home')]
@@ -33,8 +27,7 @@ class TodosController extends ControllerBase{
             $list = USession::get(self::LIST_SESSION_KEY, []);
             return $this->display($list);
         }
-        $this->showMessage('Bienvenue !', 'TodoLists permet de générer des listes ...', 'info',
-            'info circle outline', [['url' => Router::path('todos.new'), 'caption' => 'Créer une nouvelle liste', 'style' => 'basic inverted']]);
+        $this->showMessage('Bienvenue !', 'TodoLists permet de générer des listes ...', 'info', 'info circle outline', [['url' => Router::path('todos.new'), 'caption' => 'Créer une nouvelle liste', 'style' => 'basic inverted']]);
     }
 
     private function displayList(array $list){
@@ -93,8 +86,14 @@ class TodosController extends ControllerBase{
     }
 
 
-    private function showMessage(string $header, string $message, string $type = 'info', string $icon = 'info circle', array $buttons = []){
-        $this->loadView('main/showMessage.html', compact('header', 'type', 'icon', 'message', 'buttons'));
+
+    private function menu(){
+        $this->loadView('TodosController/menu.html');
+    }
+
+    public function showMessage(string $header,string $message,string $type = 'info',string $icon = 'info cirlce',array $buttons = []){
+        $this->loadView('TodosController/showMessage.html',
+            compact('header', 'message','type', 'icon', 'buttons'));
     }
 
 }
