@@ -1,8 +1,15 @@
 <div class="ui inverted segment" xmlns="http://www.w3.org/1999/html">
     <div class="ui inverted relaxed divided list">
+        <div class="item">
+            <p name="statutSave">not saved</p>
+            <hr>
+        </div>
         {% for item in list %}
         <div class="item">
-            <div class="item{{ loop.index0 }}">{{item}}</div>
+            <div class="item{{ loop.index0 }}">
+                <input type="checkbox">
+                {{item}}
+            </div>
             <form class="ui inline inverted form " action="{{ path("todos.edit") ~ loop.index0}}" method="post">
             <div class="field item{{ loop.index0 }}" style="display: none">
                 <input placeholder="Edit element" name="editElement">

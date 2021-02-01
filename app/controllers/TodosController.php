@@ -72,7 +72,7 @@ class TodosController extends ControllerBase{
         if(isset($list[$index])){
             $list[$index] = URequest::post('editElement');
             USession::set(self::LIST_SESSION_KEY, $list);
-            $this->showMessage('Element modifé', "L'élément a bien été modifié", 'info', 'check square');
+            $this->showMessage('Element modifié', "L'élément a bien été modifié", 'info', 'check square');
         }
         $this->displayList($list);
     }
@@ -109,7 +109,13 @@ class TodosController extends ControllerBase{
 
     #[Get(path: "todos/saveList", name: "todos.save")]
     public function saveList(){
+        $list=USession::get(self::LIST_SESSION_KEY);
+        $id = uniqid(); // création d'un id !
+        CacheManager::$cache->store(self::CACHE_KEY . $id, $list);
+        $status = $this->displayList().getElementsByTagName("statutSave");
 
+        $this->showMessage('Sauvegarde', "La liste a été sauvegardée sous l'id $id.\nElle sera accessible depuis l'url ?", 'info', 'check square');
+        $this->displayList($list);
     }
 
     private function menu(){
