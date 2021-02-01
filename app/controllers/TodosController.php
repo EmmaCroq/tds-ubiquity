@@ -47,6 +47,7 @@ class TodosController extends ControllerBase{
         }else{
             $list[] = URequest::post('element');
         }
+        $this->showMessage('Element ajouté', "Element correctement ajouté à la liste", 'info', 'check square');
         USession::set(self::LIST_SESSION_KEY, $list);
         $this->displayList($list);
     }
@@ -58,6 +59,7 @@ class TodosController extends ControllerBase{
         if(isset($list[$index])){
             array_splice($list, $index, 1);
             USession::set(self::LIST_SESSION_KEY, $list);
+            $this->showMessage('Element supprimé', "Element correctement retiré", 'info', 'check square');
         }
         $this->displayList($list);
 
@@ -70,6 +72,7 @@ class TodosController extends ControllerBase{
         if(isset($list[$index])){
             $list[$index] = URequest::post('editElement');
             USession::set(self::LIST_SESSION_KEY, $list);
+            $this->showMessage('Element modifé', "L'élément a bien été modifié", 'info', 'check square');
         }
         $this->displayList($list);
     }
@@ -93,6 +96,7 @@ class TodosController extends ControllerBase{
     public function newlist($force = false){
         if($force != false || !USession::exists(self::LIST_SESSION_KEY)){
             USession::set(self::LIST_SESSION_KEY, []);
+            $this->showMessage('Nouvelle Liste', "Liste correctement crée", 'info', 'check square');
             $this->displayList(USession::get(self::LIST_SESSION_KEY));
         }else if(USession::exists(self::LIST_SESSION_KEY)) {
             $this->showMessage("Nouvelle Liste", "Une liste existe déjà. Voulez vous la vider ?", "", "",
