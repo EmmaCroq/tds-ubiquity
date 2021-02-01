@@ -66,7 +66,12 @@ class TodosController extends ControllerBase{
 
     #[Post(path: "todos/edit/{index}", name: "todos.edit")]
     public function editElement($index){
-
+        $list=USession::get(self::LIST_SESSION_KEY);
+        if(isset($list[$index])){
+            $list[$index] = URequest::post('editElement');
+            USession::set(self::LIST_SESSION_KEY, $list);
+        }
+        $this->displayList($list);
     }
 
 
