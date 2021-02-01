@@ -39,7 +39,7 @@ class TodosController extends ControllerBase{
     #[Post(path: "todos/add", name: "todos.add")]
     public function addElement(){
         $list=USession::get(self::LIST_SESSION_KEY);
-        if(URequest::filled('elements')){
+        if(URequest::filled('elements')){//Ca passe dans la boucle parce que ca prend le dessus
             $elemnts = explode("\n", URequest::post('elements'));
             foreach ($elemnts as $elm){
                 $list[] = $elm;
@@ -97,16 +97,16 @@ class TodosController extends ControllerBase{
 
     }
 
-
-
     private function menu(){
         $this->loadView('TodosController/menu.html');
     }
 
     public function displayList($list){
+        if(\count($list)>0){
+            $this->jquery->show('._saveList','','',false);
+        }
         $this->jquery->change('#multiple', '$("._form").toggle();');
         $this->jquery->click(".buttonEdit", '$(".item" + this.id).toggle();');
-
         $this->jquery->renderView('TodosController/displayList.html', ['list'=>$list]);
     }
 
