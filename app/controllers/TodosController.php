@@ -30,7 +30,7 @@ class TodosController extends ControllerBase{
     public function index(){
         if(USession::exists(self::LIST_SESSION_KEY)){
             $list = USession::get(self::LIST_SESSION_KEY, []);
-            return $this->displayList($list);//$list);
+            return $this->displayList($list);
         }
         $this->showMessage('Bonjour', "Todolist permet de gerer des listes", 'info', 'info circle',
             [['url' =>Router::path('todos.new'),'caption'=>'Créer une nouvelle liste','style'=>'basic inverted']]);
@@ -39,9 +39,9 @@ class TodosController extends ControllerBase{
     #[Post(path: "todos/add", name: "todos.add")]
     public function addElement(){
         $list=USession::get(self::LIST_SESSION_KEY);
-        if(URequest::filled('elements')){//Ca passe dans la boucle parce que ca prend le dessus
-            $elemnts = explode("\n", URequest::post('elements'));
-            foreach ($elemnts as $elm){
+        if(URequest::filled('elements')){
+            $elements = explode("\n", URequest::post('elements'));
+            foreach ($elements as $elm){
                 $list[] = $elm;
             }
         }else{
@@ -54,6 +54,12 @@ class TodosController extends ControllerBase{
 
     #[Get(path: "todos/delete/{index}", name: "todos.delete")]
     public function deleteElement($index){
+        $list=USession::get(self::LIST_SESSION_KEY);
+        if(isset($list[$index])){
+            array_splice($list, $index, 1);
+            USession::set(self::LIST_SESSION_KEY, $list);
+        }
+        $this->displayList($list);
 
     }
 
