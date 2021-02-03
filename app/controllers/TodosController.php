@@ -72,7 +72,7 @@ class TodosController extends ControllerBase{
         if(isset($list[$index])){
             $list[$index] = URequest::post('editElement');
             USession::set(self::LIST_SESSION_KEY, $list);
-            $this->showMessage('Element modifié', "L'élément a bien été modifié", 'info', 'check square');
+            $this->showMessage("Element modifié", "L'élément a bien été modifié", "info", "check square");
         }
         $this->displayList($list);
     }
@@ -80,7 +80,12 @@ class TodosController extends ControllerBase{
 
     #[Get(path: "todos/loadList/{uniqid}", name: "todos.loadList")]
     public function loadList($uniqid){
-
+        if (CacheManager::$cache->exists(self::CACHE_KEY . $uniqid)) {
+            $list = CacheManager::$cache->fetch(self::CACHE_KEY . $uniqid);
+            USession::set(self::LIST_SESSION_KEY, $list);
+            $this->showMessage("La liste a été chargée", "N°$uniqid","info", "info circle");
+        }
+        $this->displayList($list);
     }
 
 
@@ -88,8 +93,6 @@ class TodosController extends ControllerBase{
     public function loadListFromForm(){
 
     }
-
-
 
 
     #[Get(path: "todos/new/{force}", name: "todos.new")]
@@ -100,7 +103,7 @@ class TodosController extends ControllerBase{
             $this->displayList(USession::get(self::LIST_SESSION_KEY));
         }else if(USession::exists(self::LIST_SESSION_KEY)) {
             $this->showMessage("Nouvelle Liste", "Une liste existe déjà. Voulez vous la vider ?", "", "",
-                [['url' =>Router::path('todos.new/1'),'caption'=>'Créer une nouvelle liste','style'=>'basic inverted'],
+                [['url' =>Router::path('todos.new'),'caption'=>'Créer une nouvelle liste','style'=>'basic inverted'],
                     ['url' =>Router::path('todos.menu'),'caption'=>'Annuler','style'=>'basic inverted']]);
             $this->displayList(USession::get(self::LIST_SESSION_KEY));
         }
@@ -111,10 +114,10 @@ class TodosController extends ControllerBase{
     public function saveList(){
         $list=USession::get(self::LIST_SESSION_KEY);
         $id = uniqid(); // création d'un id !
+        $messageSave = "La liste a été sauvegardée sous l'id <strong>$id</strong>.</br>Elle sera accessible depuis l'url <a href='http://127.0.0.1:8090/todos/loadList/$id/'>http://127.0.0.1:8090/todos/loadList/$id/</a>";
         CacheManager::$cache->store(self::CACHE_KEY . $id, $list);
-        $status = $this->displayList().getElementsByTagName("statutSave");
 
-        $this->showMessage('Sauvegarde', "La liste a été sauvegardée sous l'id $id.\nElle sera accessible depuis l'url ?", 'info', 'check square');
+        $this->showMessage('Sauvegarde', "$messageSave", 'info', 'check square');
         $this->displayList($list);
     }
 
@@ -131,7 +134,7 @@ class TodosController extends ControllerBase{
         $this->jquery->renderView('TodosController/displayList.html', ['list'=>$list]);
     }
 
-    public function showMessage(string $header,string $message,string $type = 'info',string $icon = 'info cirlce',array $buttons = []){
+    public function showMessage(string $header,string $message,string $type = 'info',string $icon = 'info circle',array $buttons = []){
         $this->loadView('TodosController/showMessage.html',
             compact('header', 'message','type', 'icon', 'buttons'));
     }
