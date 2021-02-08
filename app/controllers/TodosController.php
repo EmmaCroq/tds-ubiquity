@@ -83,7 +83,7 @@ class TodosController extends ControllerBase{
         if (CacheManager::$cache->exists(self::CACHE_KEY . $uniqid)) {
             $list = CacheManager::$cache->fetch(self::CACHE_KEY . $uniqid);
             USession::set(self::LIST_SESSION_KEY, $list);
-            $this->showMessage("La liste a été chargée", "N°$uniqid","info", "info circle");
+            $this->showMessage("La liste a été chargée", "La liste N°$uniqid","info", "info circle");
         }
         $this->displayList($list);
     }
@@ -91,7 +91,14 @@ class TodosController extends ControllerBase{
 
     #[Post(path: "todos/loadList", name: "todos.loadListPost")]
     public function loadListFromForm(){
-
+        $id=URequest::post('id');
+        if (CacheManager::$cache->exists(self::CACHE_KEY . $id)) {
+            $list = CacheManager::$cache->fetch(self::CACHE_KEY . $id);
+            $this->showMessage("Liste correctement chargée", "La liste N°$id");
+            $this->displayList($list);
+        }else{
+            $this->showMessage("Aucune liste associée", "Veuillez retaper le bon id ou sauvegarder une liste");
+        }
     }
 
 
@@ -103,8 +110,8 @@ class TodosController extends ControllerBase{
             $this->displayList(USession::get(self::LIST_SESSION_KEY));
         }else if(USession::exists(self::LIST_SESSION_KEY)) {
             $this->showMessage("Nouvelle Liste", "Une liste existe déjà. Voulez vous la vider ?", "", "",
-                [['url' =>Router::path('todos.new'),'caption'=>'Créer une nouvelle liste','style'=>'basic inverted'],
-                    ['url' =>Router::path('todos.menu'),'caption'=>'Annuler','style'=>'basic inverted']]);
+                [['button' =>Router::path('todos.menu'),'caption'=>'Annuler','style'=>'ui inverted grey button'],
+                    ['button' =>Router::path('todos.new'),'caption'=>'Confirmer la création','style'=>'ui inverted green button']]);
             $this->displayList(USession::get(self::LIST_SESSION_KEY));
         }
     }
