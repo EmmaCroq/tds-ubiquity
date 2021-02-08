@@ -1,0 +1,10 @@
+<h1>{{ orga }}</h1>
+<ul><h2>Groupes</h2>
+    {% for group in orga.groupes %}
+        <li>{{ group }} ({{ group.users | length }})
+            {% for u in group.users %}
+                <span class="ui label">{{ u }}</span>
+            {% endfor %}
+        </li>
+    {% endfor %}
+</ul>

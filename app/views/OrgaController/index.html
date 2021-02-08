@@ -1,0 +1,12 @@
+<!--View associated to index action of OrgaController controller -->
+<ul>
+    {% for orga in orgas %}
+        <li><h1>{{ orga }}</h1>
+            <ul><h2>Groupes</h2>
+                {% for group in orga.groupes %}
+                    <li>{{ group }} {{ group.users | length }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
