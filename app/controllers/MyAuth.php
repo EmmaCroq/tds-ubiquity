@@ -70,9 +70,9 @@ class MyAuth extends \Ubiquity\controllers\auth\AuthController{
          return '/login';
      }
 
-     protected function getFiles(): AuthFiles{
+     /*protected function getFiles(): AuthFiles{
          return new MyAuthFiles();
-     }
+     }*/
 
      protected function finalizeAuth() {
          if(!URequest::isAjax()){

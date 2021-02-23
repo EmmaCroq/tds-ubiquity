@@ -20,4 +20,13 @@ class UIGroups extends \Ajax\php\ubiquity\UIService{
         $dt->addDeleteButton();
     }
 
+    public function orgaForm(\models\Organization $orga) {
+        $frm=$this->semantic->dataForm('frmOrga',$orga);
+        $frm->setFields(['id','name','domain','submit']);
+        $frm->fieldAsHidden('id');
+        $frm->fieldAsLabeledInput('name',['rules'=>'empty']); //obligatoire
+        $frm->fieldAsLabeledInput('domain',['rules'=>['empty','email']]); //obligatoire et email
+        $frm->setValidationParams(["on"=>"blur","inline"=>true]);//controle de validité
+        $frm->fieldAsSubmit('submit','positive',Router::path('addOrga'),'#response');
+    }
 }
