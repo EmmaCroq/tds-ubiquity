@@ -3,6 +3,7 @@ namespace controllers;
 use models\Basket;
 use models\Order;
 use models\Product;
+use models\Section;
 use services\dao\OrgaRepository;
 use Ubiquity\attributes\items\di\Autowired;
 use Ubiquity\attributes\items\router\Route;
@@ -23,9 +24,9 @@ class MainController extends ControllerBase{
     #[Route('_default',name:'home')]
 	public function index(){
         $nbOrders = count(DAO::getAll(Order::class, 'idUser= ?', false, [USession::get("idUser")]));
-        $listProd = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
+        $listProm = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
         $nbBaskets = count(DAO::getAll(Basket::class, 'idUser= ?', false, [USession::get("idUser")]));
-        $this->loadDefaultView(['nbOrders'=>$nbOrders, 'listProd'=>$listProd, 'nbBaskets'=>$nbBaskets]);
+        $this->loadDefaultView(['nbOrders'=>$nbOrders, 'listProm'=>$listProm, 'nbBaskets'=>$nbBaskets]);
 	}
 
     protected function getAuthController(): AuthController{
@@ -49,7 +50,10 @@ class MainController extends ControllerBase{
     #[Route ('store', name:'store')]
     public function store(){
         $store = DAO::getAll(Product::class, false, false);
-        $this->loadDefaultView(['store'=>$store]);
+        $listSection = DAO::getAll(Section::class, false, false);
+        $listProm = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
+        //$nbprodSection = count(DAO::getAll(Product::class, 'section= ?', false));
+        $this->loadDefaultView(['store'=>$store, 'listSection'=>$listSection, 'listProm'=>$listProm]);
     }
 
     #[Route ('newBasket', name:'newBasket')]

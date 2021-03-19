@@ -1,1 +1,34 @@
-<!--View associated to store action of MainController controller -->
+<div class="ui grid">
+    <div class="four wide column">
+        <div class="ui black inverted segment">
+            <div class="ui list">
+                {% for sect in listSection %}
+                <li>
+                    <div>{{ sect.name }} (nb)</div>
+                </li>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="twelve wide column">
+        <fieldset>
+            <legend>Promotions en cours</legend>
+            <div class="ui list">
+                {% for prod in listProm %}
+                <li>
+                    <img src="https://resize.prod.docfr.doc-media.fr/img/var/doctissimo/storage/images/fr/www/nutrition/famille-d-aliments/guide-aliments/pomme/7854594-1-fre-FR/pomme.jpg" alt="alternatetext" width="100" height="80">
+                    <div>{{ prod.name }}</div>
+                    <strong>{{prod.price}}€</strong>
+                </li>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Consultés récemment</legend>
+            <h5>Titre de la section</h5>
+            <div class="ui list">
+                <li>production</li>
+            </div>
+        </fieldset>
+    </div>
+</div>
