@@ -1,23 +1,39 @@
+<h1>Tableau de bord</h1>
 <div class="ui grid">
     <fieldset class="eleven wide column left floated">
         <legend>Store</legend>
-        <div class="ui vertical buttons">
-            <a href="{{ path('order') }}" class="ui black button">Mes commandes ({{ numCommandes }})</a>
-            <a href="{{ path('store') }}" class="ui black button">Parcourir le store</a>
-        </div>
+        <!--<div class="ui vertical buttons">-->
+            <a href="{{ path('order') }}" class="ui black button">Mes commandes ({{ nbOrders }})</a> <br><br>
+            <a href="{{ path('store') }}" class="fluid ui black button">Parcourir le store</a>
+        <!--</div>-->
     </fieldset>
     <fieldset class="four wide column right floated">
         <legend>Paniers</legend>
-        <div class="ui vertical buttons">
-            <a href="{{ path('newBasket') }}" class="ui green button">Nouveau</a>
-            <a href="{{ path('basket') }}" class="ui black button">Mes paniers ({{ numBaskets }})</a>
-        </div>
+        <!--<div class="ui vertical buttons">-->
+            <a href="{{ path('newBasket') }}" class="fluid ui green button">Nouveau</a><br>
+            <a href="{{ path('basket') }}" class="fluid ui black button">Mes paniers ({{ nbBaskets }})</a>
+        <!--</div>-->
     </fieldset>
     <fieldset class="sixteen wide column">
         <legend>Promotions en cours</legend>
+        <div class="ui list">
+            {% for prod in listProd %}
+            <li>
+                <div class="ui center aligned container">
+                    <img src="https://resize.prod.docfr.doc-media.fr/img/var/doctissimo/storage/images/fr/www/nutrition/famille-d-aliments/guide-aliments/pomme/7854594-1-fre-FR/pomme.jpg" alt="alternatetext" width="100" height="80">
+                    <div>{{ prod.name }}</div>
+                    <strong>{{prod.price}}€</strong>
+                </div>
+            </li>
+            {% endfor %}
+        </div>
     </fieldset>
     <fieldset class="sixteen wide column">
         <legend>Consultés récemment</legend>
+        <h5>Titre de la section</h5>
+        <div class="ui list">
+            <li>production</li>
+        </div>
     </fieldset>
 </div>
 {{ script_foot | raw }}

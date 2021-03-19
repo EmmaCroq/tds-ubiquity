@@ -1,9 +1,15 @@
 <?php
 namespace controllers;
-use services\dao\UserRepository;
+use models\Basket;
+use models\Order;
+use models\Product;
+use services\dao\OrgaRepository;
+use Ubiquity\attributes\items\di\Autowired;
 use Ubiquity\attributes\items\router\Route;
 use Ubiquity\controllers\auth\AuthController;
 use Ubiquity\controllers\auth\WithAuthTrait;
+use Ubiquity\orm\DAO;
+use Ubiquity\utils\http\USession;
  /**
   * Controller MainController
   */
@@ -16,9 +22,10 @@ class MainController extends ControllerBase{
 
     #[Route('_default',name:'home')]
 	public function index(){
-        $this->jquery->renderView("MainController/index.html");
-        $numCommandes = count(DAO::getAll(Order::class, 'idUser= ?', false, [USession::get("idUser")]));
-        $this->loadDefaultView(['numCommandes'=>$numCommandes]);
+        $nbOrders = count(DAO::getAll(Order::class, 'idUser= ?', false, [USession::get("idUser")]));
+        $listProd = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
+        $nbBaskets = count(DAO::getAll(Basket::class, 'idUser= ?', false, [USession::get("idUser")]));
+        $this->loadDefaultView(['nbOrders'=>$nbOrders, 'listProd'=>$listProd, 'nbBaskets'=>$nbBaskets]);
 	}
 
     protected function getAuthController(): AuthController{
