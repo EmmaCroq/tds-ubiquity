@@ -48,7 +48,7 @@ class MyAuth extends \Ubiquity\controllers\auth\AuthController{
                 $password = URequest::post($this->_getPasswordInputName());
                 $user = DAO::getOne(User::class, 'email= ?', false, [$email]);
                 if(isset($user)) {
-                    USession::set('idOrga', $user->getOrganization());
+                    USession::set('idUser', $user->getId());
                     return $user;
                 }
             }
@@ -65,7 +65,7 @@ class MyAuth extends \Ubiquity\controllers\auth\AuthController{
     }
 
     public function _getBaseRoute() {
-        return '/login';
+        return 'MyAuth';
     }
 
     /*protected function getFiles(): AuthFiles{

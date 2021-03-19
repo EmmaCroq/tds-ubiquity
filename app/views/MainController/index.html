@@ -1,1 +1,23 @@
-<p>hola</p>
+<div class="ui grid">
+    <fieldset class="eleven wide column left floated">
+        <legend>Store</legend>
+        <div class="ui vertical buttons">
+            <a href="{{ path('order') }}" class="ui black button">Mes commandes ({{ numCommandes }})</a>
+            <a href="{{ path('store') }}" class="ui black button">Parcourir le store</a>
+        </div>
+    </fieldset>
+    <fieldset class="four wide column right floated">
+        <legend>Paniers</legend>
+        <div class="ui vertical buttons">
+            <a href="{{ path('newBasket') }}" class="ui green button">Nouveau</a>
+            <a href="{{ path('basket') }}" class="ui black button">Mes paniers ({{ numBaskets }})</a>
+        </div>
+    </fieldset>
+    <fieldset class="sixteen wide column">
+        <legend>Promotions en cours</legend>
+    </fieldset>
+    <fieldset class="sixteen wide column">
+        <legend>Consultés récemment</legend>
+    </fieldset>
+</div>
+{{ script_foot | raw }}
