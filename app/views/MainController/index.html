@@ -2,17 +2,13 @@
 <div class="ui grid">
     <fieldset class="eleven wide column left floated">
         <legend>Store</legend>
-        <!--<div class="ui vertical buttons">-->
             <a href="{{ path('order') }}" class="ui black button">Mes commandes ({{ nbOrders }})</a> <br><br>
             <a href="{{ path('store') }}" class="fluid ui black button">Parcourir le store</a>
-        <!--</div>-->
     </fieldset>
     <fieldset class="four wide column right floated">
         <legend>Paniers</legend>
-        <!--<div class="ui vertical buttons">-->
             <a href="{{ path('newBasket') }}" class="fluid ui green button">Nouveau</a><br>
             <a href="{{ path('basket') }}" class="fluid ui black button">Mes paniers ({{ nbBaskets }})</a>
-        <!--</div>-->
     </fieldset>
     <fieldset class="sixteen wide column">
         <legend>Promotions en cours</legend>
@@ -21,6 +17,7 @@
                 {% for prod in listProm %}
                 <td>
                     <img src="{{ prod.image }}" alt="alternatetext" width="100" height="80">
+                    <!-- use with "../../public/assets/img/chouchou.jpg" in bdd i.e. -->
                     <div>{{ prod.name }}</div>
                     <strong>{{prod.price}}€</strong>
                 </td>

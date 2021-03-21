@@ -1,0 +1,33 @@
+<h1>Ma section</h1>
+<div class="ui grid">
+    <div class="four wide column">
+        <div class="ui vertical fluid inverted menu">
+            {% for section in listSection %}
+            <a href="{{ path('section', [section.id]) }}" class="ui item"> {{ section.name }}
+                <span class="ui teal left pointing label"> {{ section.products|length }}</span>
+            </a>
+            {% endfor %}
+            <br>
+        </div>
+    </div>
+    <div class="twelve wide column">
+        <fieldset>
+            <legend>Produits</legend>
+            <table class="ui very basic celled table">
+                <tr>
+                    {% for prod in product %}
+                        <td>
+                            <img src="{{ prod.image }}" alt="alternatetext" width="100" height="80">
+                            <div>{{ prod.name }}</div>
+                            <strong>{{prod.price}}€</strong>
+                            <button>
+                                <div class="glyphicon glyphicon-shopping-cart"></div>
+                            </button>
+                            <div class="ui label">{{ prod.comments }}</div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+</div>

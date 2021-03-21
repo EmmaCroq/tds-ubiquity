@@ -1,13 +1,13 @@
+<h1>Mon store</h1>
 <div class="ui grid">
     <div class="four wide column">
-        <div class="ui black inverted segment">
-            <div class="ui list">
-                {% for sect in listSection %}
-                <a href="{{ path('order/{{ idSection }}') }}">
-                    <div>{{ sect.name }} (nb)</div>
-                </a>
-                {% endfor %}
-            </div>
+        <div class="ui vertical fluid inverted menu">
+            {% for section in listSection %}
+            <a href="{{ path('section', [section.id]) }}" class="ui item"> {{ section.name }}
+            <span class="ui teal left pointing label"> {{ section.products|length }}</span>
+            </a>
+            {% endfor %}
+            <br>
         </div>
     </div>
     <div class="twelve wide column">
