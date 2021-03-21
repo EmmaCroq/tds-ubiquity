@@ -16,17 +16,17 @@
     </fieldset>
     <fieldset class="sixteen wide column">
         <legend>Promotions en cours</legend>
-        <div class="ui list">
-            {% for prod in listProm %}
-            <li>
-                <div class="ui center aligned container">
-                    <img src="https://resize.prod.docfr.doc-media.fr/img/var/doctissimo/storage/images/fr/www/nutrition/famille-d-aliments/guide-aliments/pomme/7854594-1-fre-FR/pomme.jpg" alt="alternatetext" width="100" height="80">
+        <table class="ui very basic collapsing celled table">
+            <tr>
+                {% for prod in listProm %}
+                <td>
+                    <img src="{{ prod.image }}" alt="alternatetext" width="100" height="80">
                     <div>{{ prod.name }}</div>
                     <strong>{{prod.price}}€</strong>
-                </div>
-            </li>
-            {% endfor %}
-        </div>
+                </td>
+                {% endfor %}
+            </tr>
+        </table>
     </fieldset>
     <fieldset class="sixteen wide column">
         <legend>Consultés récemment</legend>
