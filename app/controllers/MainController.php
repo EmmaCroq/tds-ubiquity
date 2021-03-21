@@ -50,7 +50,7 @@ class MainController extends ControllerBase{
     #[Route ('store', name:'store')]
     public function store(){
         $store = DAO::getAll(Product::class, false, false);
-        $listsections=DAO::getAll(Section::class,'', ['products']);
+        $listsections = DAO::getAll(Section::class,'', ['products']);
         $listProm = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
         //$nbprodSection = DAO::count(Product::class, 'section= ?', false?);
         $this->loadDefaultView(['store'=>$store, 'listProm'=>$listProm, 'listSection'=>$listsections]);
@@ -71,9 +71,18 @@ class MainController extends ControllerBase{
     #[Route ('section/{id}', name:'section')]
     public function section($id){
         $product = DAO::getAll(Product::class, 'idSection= '.$id, [USession::get("idSection")]);
-        $section=DAO::getById(Section::class,$id,['products']);
-        $listsections=DAO::getAll(Section::class,'', ['products']);
+        $section = DAO::getById(Section::class,$id,['products']);
+        $listsections = DAO::getAll(Section::class,'', ['products']);
         $this->loadDefaultView(['section'=>$section, 'listSection'=>$listsections, 'product'=>$product]);
+    }
+
+    #[Route ('product/{id}', name:'product')]
+    public function product($id){
+        $product = DAO::getAll(Product::class, 'idSection= '.$id, [USession::get("idSection")]);
+        $productid = DAO::getById(Product::class,$id,['sections']);
+        $section = DAO::getById(Section::class,$id,['products']);
+        $listsections = DAO::getAll(Section::class,'', ['products']);
+        $this->loadDefaultView(['section'=>$section, 'listSection'=>$listsections, 'product'=>$product, 'productid'=>$productid]);
     }
 
 }

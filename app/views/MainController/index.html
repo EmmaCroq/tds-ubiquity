@@ -20,6 +20,7 @@
                     <!-- use with "../../public/assets/img/chouchou.jpg" in bdd i.e. -->
                     <div>{{ prod.name }}</div>
                     <strong>{{prod.price}}€</strong>
+                    <span class="ui red text"> {{ prod.promotion }}% </span>
                 </td>
                 {% endfor %}
             </tr>

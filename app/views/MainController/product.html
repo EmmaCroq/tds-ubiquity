@@ -1,0 +1,39 @@
+<h1>Mon produit</h1>
+<div class="ui grid">
+    <div class="four wide column">
+        <div class="ui vertical fluid inverted menu">
+            {% for section in listSection %}
+            <a href="{{ path('section', [section.id]) }}" class="ui item"> {{ section.name }}
+                <span class="ui teal left pointing label"> {{ section.products|length }}</span>
+            </a>
+            {% endfor %}
+            <br>
+        </div>
+    </div>
+    <div class="twelve wide column">
+        <h3> {{ productid.name }} </h3>
+        <fieldset>
+            <legend>Fiche produit</legend>
+            <div class="ui equal width center aligned padded grid">
+                <div class="row">
+                    <div class="column"><img src="{{ productid.image }}" alt="alternatetext" width="300" height="240"></div>
+                    <div class="column">
+                        <button class="ui blue big icon button right floated"><i class="shopping cart icon"></i></button>
+                        <h2>{{ productid.name }}</h2>
+                        <span class="ui blue text"><h3>{{productid.price}}€</h3></span>
+                        <span class="ui red text"> <h3>{{ product.promotion }}</h3> </span>
+                        <button class="ui green circular icon button right floated"><i class="tasks icon"></i></button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="column"><div class="ui label">{{ productid.comments }}</div></div>
+                    <div class="column">
+                        <a href="{{ path('section', [section.id]) }}" class="ui button right floated">Retour vers {{ section.name }}</a>
+                    </div>
+                </div>
+
+            </div>
+        </fieldset>
+    </div>
+</div>
