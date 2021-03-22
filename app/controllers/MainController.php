@@ -4,7 +4,7 @@ use models\Basket;
 use models\Order;
 use models\Product;
 use models\Section;
-use services\dao\OrgaRepository;
+use services\dao\UserRepository;
 use Ubiquity\attributes\items\di\Autowired;
 use Ubiquity\attributes\items\router\Route;
 use Ubiquity\controllers\auth\AuthController;
@@ -83,6 +83,12 @@ class MainController extends ControllerBase{
         $section = DAO::getById(Section::class,$idSection,['products']);
         $listsections = DAO::getAll(Section::class,'', ['products']);
         $this->loadDefaultView(['section'=>$section, 'listSection'=>$listsections, 'product'=>$product, 'productid'=>$productid]);
+    }
+
+    #[Route ('basket/add/{id}', name:'basket')]
+    public function basketdefault($id){
+        $product = DAO::getById(Product::class,$id,['sections']);
+        $this->loadDefaultView(['product'=>$product]);
     }
 
 }

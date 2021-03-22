@@ -14,22 +14,20 @@
         <h3> {{ section.name }} </h3>
         <fieldset>
             <legend>Produits</legend>
-            <table class="ui very basic celled table">
-                <tr>
+            <div class="ui equal width center aligned padded grid">
                     {% for prod in product %}
-                        <td>
+                        <div class="four wide column">
                             <a href="{{ path('product', [section.id, prod.id]) }}">
-                                <img src="{{ prod.image }}" alt="alternatetext" width="100" height="80">
+                                <img src="/public/assets/img/{{ prod.image }}.jpg" alt="alternatetext" width="100" height="80">
                                 <div>{{ prod.name }}</div>
                                 <strong>{{prod.price}}€</strong>
-                                <button class="ui circular mini icon inverted button right floated"><i class="shopping cart icon"></i></button>
+                                <a href="{{ path('defaultBasket', [article.id]) }}" class="ui circular mini icon inverted button right floated"><i class="shopping cart icon"></i></a>
                                 <div class="ui label">{{ prod.comments }}</div>
                                 <button class="ui circular mini icon inverted button right floated"><i class="tasks icon"></i></button>
                             </a>
-                        </td>
+                        </div>
                     {% endfor %}
-                </tr>
-            </table>
+            </div>
         </fieldset>
     </div>
 </div>
