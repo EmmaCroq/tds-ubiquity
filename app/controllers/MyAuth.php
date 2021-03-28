@@ -23,6 +23,7 @@ class MyAuth extends \Ubiquity\controllers\auth\AuthController{
         if(isset($urlParts)){
             $this->_forward(implode("/",$urlParts));
         }else{
+            USession::set('sessionRecent', []); // session de produit recent
             UResponse::header('location','/');
         }
     }

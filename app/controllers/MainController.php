@@ -26,7 +26,8 @@ class MainController extends ControllerBase{
         $nbOrders = DAO::count(Order::class, 'idUser= ?', [USession::get("idUser")]); // not count(DAO::getAll
         $listProm = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
         $nbBaskets = DAO::count(Basket::class, 'idUser= ?', [USession::get("idUser")]);
-        $this->loadDefaultView(['nbOrders'=>$nbOrders, 'listProm'=>$listProm, 'nbBaskets'=>$nbBaskets]);
+        $nbprodSection = USession::get('sessionRecent');
+        $this->loadDefaultView(['nbOrders'=>$nbOrders, 'listProm'=>$listProm, 'nbBaskets'=>$nbBaskets, 'nbprodSection'=>$nbprodSection]);
 	}
 
     protected function getAuthController(): AuthController{
@@ -52,8 +53,8 @@ class MainController extends ControllerBase{
         $store = DAO::getAll(Product::class, false, false);
         $listsections = DAO::getAll(Section::class,'', ['products']);
         $listProm = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
-        //$nbprodSection = DAO::count(Product::class, 'section= ?', false?);
-        $this->loadDefaultView(['store'=>$store, 'listProm'=>$listProm, 'listSection'=>$listsections]);
+        $nbprodSection = USession::get('sessionRecent');
+        $this->loadDefaultView(['store'=>$store, 'listProm'=>$listProm, 'listSection'=>$listsections, 'nbprodSection'=>$nbprodSection]);
     }
 
     #[Route ('newBasket', name:'newBasket')]
@@ -82,6 +83,9 @@ class MainController extends ControllerBase{
         $productid = DAO::getById(Product::class,$idProduct,['sections']);
         $section = DAO::getById(Section::class,$idSection,['products']);
         $listsections = DAO::getAll(Section::class,'', ['products']);
+        $nbprodSection = USession::get("sessionRecent");
+        \array_unshift($nbprodSection, $productid);
+        USession::set('sessionRecent', \array_slice($nbprodSection,0,3)); // avoir max un tableau de trois produits
         $this->loadDefaultView(['section'=>$section, 'listSection'=>$listsections, 'product'=>$product, 'productid'=>$productid]);
     }
 
