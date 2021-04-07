@@ -1,0 +1,15 @@
+<div class="ui grid ">
+    <div class="ui wide column">
+        <div class="ui top attached header">Mon Panier</div>
+        <div class="ui attached segment">
+            <ul>
+                {% for prod in products %}
+                    <li>{{ prod.product.name }} | {{ prod.quantity }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        Prix : {{ fullPrice }}
+        Remise : {{ totalDiscount }}
+        Quantité : {{ quantity }}
+    </div>
+</div>

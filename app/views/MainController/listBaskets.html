@@ -1,0 +1,10 @@
+<div class="ui grid ">
+    <h1 class="ui wide column">
+        <h1>Mes panniers</h1>
+        <div class="ui attached segment">
+            {% for basket in baskets %}
+            <li>{{ basket.name }}</li>
+            {% endfor %}
+        </div>
+</div>
+</div>

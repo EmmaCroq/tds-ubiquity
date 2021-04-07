@@ -1,8 +1,7 @@
 <?php
 namespace controllers;
+use classes\BasketSession;
 use Ubiquity\attributes\items\router\Get;
-use Ubiquity\controllers\Router;
-use Ubiquity\controllers\Startup;
 use Ubiquity\orm\DAO;
 use Ubiquity\utils\flash\FlashMessage;
 use Ubiquity\utils\http\UResponse;
@@ -12,6 +11,8 @@ use controllers\auth\files\MyAuthFiles;
 use Ubiquity\controllers\auth\AuthFiles;
 use Ubiquity\attributes\items\router\Route;
 use models\User;
+use models\Basket;
+use models\Basketdetail;
  /**
   * Controller MyAuth
   */
@@ -48,8 +49,10 @@ class MyAuth extends \Ubiquity\controllers\auth\AuthController{
             if($email!=null) {
                 $password = URequest::post($this->_getPasswordInputName());
                 $user = DAO::getOne(User::class, 'email= ?', false, [$email]);
-                if(isset($user)) {
+                if(isset($user) && $user->getPassword() == $password) { // login et mot de passe obligatoire
                     USession::set('idUser', $user->getId());
+                    $BasketSession = new BasketSession("_current_", $user);
+                    USession::set('defaultBasket', $BasketSession);
                     return $user;
                 }
             }

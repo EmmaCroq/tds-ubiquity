@@ -21,9 +21,9 @@
                                 <img src="/public/assets/img/{{ prod.image }}.jpg" alt="alternatetext" width="100" height="80">
                                 <div>{{ prod.name }}</div>
                                 <strong>{{prod.price}}€</strong>
-                                <a href="{{ path('defaultBasket', [article.id]) }}" class="ui circular mini icon inverted button right floated"><i class="shopping cart icon"></i></a>
+                                <a href="{{ path('addBasket', [article.id]) }}" class="ui circular mini icon inverted button right floated"><i class="shopping cart icon"></i></a>
                                 <div class="ui label">{{ prod.comments }}</div>
-                                <button class="ui circular mini icon inverted button right floated"><i class="tasks icon"></i></button>
+                                <a href="#" class="ui circular mini icon inverted button right floated"><i class="tasks icon"></i></a>
                             </a>
                         </div>
                     {% endfor %}
