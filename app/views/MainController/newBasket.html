@@ -1,0 +1,27 @@
+<!--View associated to newBasket action of MainController controller -->
+<div class="ui grid ">
+    <div class="ui wide column">
+        <div class="ui top attached header"><h3>Nouveau Panier</h3></div>
+        <div class="ui attached segment">
+            <form class="ui form" action="{{ path('newBasket') }}" method="post">
+                <div class="field">
+                    <label>Nom</label>
+                    <input type="text" name="name" placeholder="Nom du panier">
+                </div>
+                <button class="ui button" type="submit">Créer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="ui list">
+    <div class="ui top attached header"><h3>Mes paniers</h3></div>
+    <div class="ui attached segment">
+        {% for basket in baskets %}
+            <div class="ui grid">
+                <div class="two wide column"><i class="angle double right icon"></i></div>
+                <div class="fourteen wide column"><li>{{ basket.name }}</li></div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

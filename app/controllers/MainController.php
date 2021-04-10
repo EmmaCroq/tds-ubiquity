@@ -18,6 +18,7 @@ use Ubiquity\orm\DAO;
 use Ubiquity\utils\http\USession;
 use Ubiquity\utils\http\URequest;
 use Ubiquity\utils\http\UResponse;
+
  /**
   * Controller MainController
   */
@@ -87,17 +88,43 @@ class MainController extends ControllerBase{
     #[Route ('Baskets', name:'baskets')] // affiche la liste des paniers créés
     public function listBaskets(){
         $baskets = DAO::getAll(Basket::class, 'idUser= ?', false, [USession::get("idUser")]);
-        $this->loadDefaultView(['baskets'=>$baskets]);
+        $nbBaskets = DAO::count(Basket::class, 'idUser= ?', [USession::get("idUser")]);
+        $BasketSession = USession::get('defaultBasket');
+        $products = $BasketSession->getProducts();
+        $quantity = $BasketSession->getQuantity();
+        $totalDiscount = $BasketSession->getTotalDiscount();
+        $fullPrice = $BasketSession->getTotalFullPrice();
+        $this->loadDefaultView(['baskets'=>$baskets, 'nbBaskets'=>$nbBaskets, 'products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
     }
 
-    #[Route ('newBasket', name:'newBasket')] // créer le nouveau panier
+    #[Route ('newBasket', name:'newBasket')] // créer un nouveau panier
     public function newBasket(){
-
+        $baskets = DAO::getAll(Basket::class, 'idUser= ?', false, [USession::get("idUser")]);
+        $data = URequest::post("name");
+        if(URequest::post("name") != null){
+            $currentUser = DAO::getById(User::class, USession::get("idUser"), false);
+            $newBasket = new Basket();
+            $newBasket->setUser($currentUser);
+            $newBasket->setName($data);
+            DAO::save($newBasket);
+            UResponse::header('location', '/'.Router::path('newBasket'));
+        }
+        $this->loadDefaultView(['baskets'=>$baskets]);
     }
 
     #[Route ('Basket', name:'basket')] // affiche le panier actuel
     public function basketDefault(){
         $BasketSession = USession::get('defaultBasket');
+        $products = $BasketSession->getProducts();
+        $quantity = $BasketSession->getQuantity();
+        $totalDiscount = $BasketSession->getTotalDiscount();
+        $fullPrice = $BasketSession->getTotalFullPrice();
+        $this->loadDefaultView(['products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
+    }
+
+    #[Route ('Basket/{idBasket}', name:'basketid')] // affiche le panier actuel
+    public function basketId($idBasket){
+        $BasketSession = USession::get('defaultBasket'); // autre session
         $products = $BasketSession->getProducts();
         $quantity = $BasketSession->getQuantity();
         $totalDiscount = $BasketSession->getTotalDiscount();
@@ -115,6 +142,12 @@ class MainController extends ControllerBase{
 
     #[Route ('basket/addTo/{idBasket}/{idProduct}', name:'addBasketSpec')] // ajoute au panier spécifique
     public function addBasketSpec($idBasket,$idProduct){
-
+        $basket = DAO::getById(Basket::class, $idBasket, false);
+        $article = DAO::getById(Product::class, $idProduct, false);
+        $basketDetail = new Basketdetail();
+        $basketDetail->setProduct($article);
+        $basketDetail->setBasket($basket);
+        $basketDetail->setQuantity(1);
+        UResponse::header('location', '/'.Router::path('store'));
     }
 }

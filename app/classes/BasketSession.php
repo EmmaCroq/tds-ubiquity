@@ -21,9 +21,9 @@ class BasketSession
     public function addProduct($article, $quantity)
     {
         if(DAO::getOne(Basketdetail::class,'idProduct = ?',false,[$article->getId()])){
-            $this->jslog("There already a product");
+            $this->jslog("Il y a déjà un produit");
         }else{
-            $this->jslog("Add".$article->getName(). "product in ". $quantity);
+            $this->jslog("Ajouter".$article->getName(). "le produit dans ". $quantity);
 
             $basketDetail = new Basketdetail();
             $basketDetail->setBasket($this->basket);

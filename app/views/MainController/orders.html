@@ -1,6 +1,12 @@
+<!--View associated to orders action of MainController controller -->
 <h1>Mes commandes</h1>
 <div class="ui list">
-    {% for order in orders %}
-    <li>{{ order.dateCreation }}</li>
-    {% endfor %}
+    <div class="ui attached segment">
+        {% for order in orders %}
+        <div class="ui grid">
+            <div class="two wide column"><i class="angle double right icon"></i></div>
+            <div class="fourteen wide column"><li>{{ order.dateCreation }}</li></div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
