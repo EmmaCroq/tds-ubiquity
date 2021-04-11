@@ -1,0 +1,23 @@
+<!--View associated to addBasketSpec action of MainController controller -->
+<h1>Dans quel panier ?</h1>
+<form class="ui form" action="{{ path('addBasketSpecial', [article])}}" method="post">
+<div class="ui segment">
+    <div class="ui list">
+        {% for basket in baskets %}
+            <div class="ui item">
+                <div>
+                <i class="angle double right icon"></i>
+                <a href="{{ path('basketid', [basket.id]) }}" class="ui item"> {{ basket.name }}
+                    <span class="ui teal left pointing label"> {{ basket.basketdetails|length }}</span>
+                </a>
+                <input type="radio" name="basketselected" value="{{ basket.id }}" class="ui button right floated"/>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<div>
+    <input type="submit" class="ui green button right floated" value="Valider" />
+    <a class="ui red button right floated" href="{{ path('store')}}">Retour</a>
+</div>
+</form>

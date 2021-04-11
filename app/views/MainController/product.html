@@ -20,7 +20,7 @@
                     <div class="column"><img src="/public/assets/img/{{ productid.image }}.jpg" alt="alternatetext" width="300" height="240"></div>
 
                     <div class="column">
-                        <a href='{{ path('addBasket', [article.id]) }}'>
+                        <a href="{{ path('addBasket', [article.id]) }}">
                             <div class="ui blue big icon button right floated" tabindex="0">
                                 <i class="shopping cart icon"></i>
                             </div>
@@ -28,7 +28,7 @@
                         <h2>{{ productid.name }}</h2>
                         <span class="ui blue text"><h3>{{productid.price}}€</h3></span>
                         <span class="ui red text"> <h3>{{ product.promotion }}</h3> </span>
-                        <a href='{{ path('addBasketSpec', [article.id]) }}'>
+                        <a href="{{ path('addBasketSpec', [article.id]) }}"> <!-- Créer un liste pour choisir l'id du basket ? -->
                             <div class="ui green circular icon button right floated" tabindex="0">
                                 <i class="tasks icon"></i>
                             </div>

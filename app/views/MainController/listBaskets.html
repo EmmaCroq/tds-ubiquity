@@ -5,7 +5,7 @@
         <div class="ui vertical fluid inverted menu">
             {% for basket in baskets %}
             <a href="{{ path('basket', [basket.id]) }}" class="ui item"> {{ basket.name }}
-                <span class="ui teal left pointing label"> {{ nbBaskets }}</span>
+                <span class="ui teal left pointing label"> {{ basket.basketdetails|length }}</span>
             </a>
             {% endfor %}
             <br>
@@ -17,13 +17,23 @@
             <div class="ui attached segment">
                 <ul>
                     {% for prod in products %}
-                    <li>{{ prod.product.name }} | {{ prod.quantity }}</li>
+                    <div class="ui list">
+                        <i class="angle double right icon"></i>
+                        <span>{{ prod.product.name }}</span>
+                        <span>{{ prod.quantity }}</span>
+                    </div>
                     {% endfor %}
                 </ul>
             </div>
-            Prix : {{ fullPrice }}
-            Remise : {{ totalDiscount }}
-            Quantité : {{ quantity }}
+            <div class="ui segment">
+                <div claas="ui segment" id="toUpdate">
+                    <div class="ui list">
+                        <p>Quantité : {{ quantity }}</p>
+                        <p>Réduction : {{ totalDiscount }}</p>
+                        <p>Prix total : {{ fullPrice }} €</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

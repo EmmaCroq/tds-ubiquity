@@ -75,6 +75,7 @@ class MainController extends ControllerBase{
 
     #[Route ('product/{idSection}/{idProduct}', name:'product')]
     public function product($idSection,$idProduct){
+        $article = DAO::getById(Product::class, $idProduct, false);
         $product = DAO::getAll(Product::class, 'idSection= '.$idProduct, [USession::get("idSection")]);
         $productid = DAO::getById(Product::class,$idProduct,['sections']);
         $section = DAO::getById(Section::class,$idSection,['products']);
@@ -82,19 +83,18 @@ class MainController extends ControllerBase{
         $nbprodSection = USession::get("sessionRecent");
         \array_unshift($nbprodSection, $productid);
         USession::set('sessionRecent', \array_slice($nbprodSection,0,3)); // avoir max un tableau de trois produits
-        $this->loadDefaultView(['section'=>$section, 'listSection'=>$listsections, 'product'=>$product, 'productid'=>$productid]);
+        $this->loadDefaultView(['article'=>$article, 'section'=>$section, 'listSection'=>$listsections, 'product'=>$product, 'productid'=>$productid]);
     }
 
     #[Route ('Baskets', name:'baskets')] // affiche la liste des paniers créés
     public function listBaskets(){
-        $baskets = DAO::getAll(Basket::class, 'idUser= ?', false, [USession::get("idUser")]);
-        $nbBaskets = DAO::count(Basket::class, 'idUser= ?', [USession::get("idUser")]);
+        $baskets = DAO::getAll(Basket::class, 'idUser= ?', ['basketdetails'], [USession::get("idUser")]);
         $BasketSession = USession::get('defaultBasket');
         $products = $BasketSession->getProducts();
         $quantity = $BasketSession->getQuantity();
         $totalDiscount = $BasketSession->getTotalDiscount();
         $fullPrice = $BasketSession->getTotalFullPrice();
-        $this->loadDefaultView(['baskets'=>$baskets, 'nbBaskets'=>$nbBaskets, 'products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
+        $this->loadDefaultView(['baskets'=>$baskets, 'products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
     }
 
     #[Route ('newBasket', name:'newBasket')] // créer un nouveau panier
@@ -104,6 +104,8 @@ class MainController extends ControllerBase{
         if(URequest::post("name") != null){
             $currentUser = DAO::getById(User::class, USession::get("idUser"), false);
             $newBasket = new Basket();
+            $basket = new BasketSession($newBasket);
+            USession::set($data.'Basket', $basket);
             $newBasket->setUser($currentUser);
             $newBasket->setName($data);
             DAO::save($newBasket);
@@ -112,7 +114,16 @@ class MainController extends ControllerBase{
         $this->loadDefaultView(['baskets'=>$baskets]);
     }
 
-    #[Route ('Basket', name:'basket')] // affiche le panier actuel
+    #[Route ('confirmQuantity', name:'confirmQuantity')] // confirm la quantité du panier par défaut
+    public function confirmQuantity(){
+        $quantity = URequest::post("quantity[]");
+        $newProduct = new Basketdetail();
+        $newProduct->setQuantity($quantity);
+        DAO::save($newProduct);
+        UResponse::header('location', '/'.Router::path('basketDefault'));
+    }
+
+    #[Route ('Basket', name:'basket')] // affiche le panier par defaut
     public function basketDefault(){
         $BasketSession = USession::get('defaultBasket');
         $products = $BasketSession->getProducts();
@@ -124,30 +135,36 @@ class MainController extends ControllerBase{
 
     #[Route ('Basket/{idBasket}', name:'basketid')] // affiche le panier actuel
     public function basketId($idBasket){
-        $BasketSession = USession::get('defaultBasket'); // autre session
-        $products = $BasketSession->getProducts();
-        $quantity = $BasketSession->getQuantity();
-        $totalDiscount = $BasketSession->getTotalDiscount();
-        $fullPrice = $BasketSession->getTotalFullPrice();
-        $this->loadDefaultView(['products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
+        $basket = DAO::getById(Basket::class, $idBasket, false);
+        $basket = new BasketSession($basket);
+        USession::set('defaultBasket', $basket);
+        UResponse::header('location', '/'.Router::path('baskets'));
     }
 
     #[Route ('basket/add/{idProduct}', name:'addBasket')] // ajoute au panier par défaut
     public function addBasketDefault($idProduct){
         $article = DAO::getById(Product::class, $idProduct, false);
         $BasketSession = USession::get('defaultBasket');
-        $BasketSession->addProduct($article, 1);
-        UResponse::header('location', '/'.Router::path('store'));
+        $BasketSession->addProduct($article, 1, $BasketSession);
+        UResponse::header('location', '/'.Router::path('basket'));
     }
 
-    #[Route ('basket/addTo/{idBasket}/{idProduct}', name:'addBasketSpec')] // ajoute au panier spécifique
-    public function addBasketSpec($idBasket,$idProduct){
+    #[Route ('basket/addTo/{idProduct}', name:'addBasketSpec')] // permet de choisir dans quel panier mettre
+    public function addBasketSpec($idProduct){
+        $baskets = DAO::getAll(Basket::class, 'idUser= ?', ['basketdetails'], [USession::get("idUser")]);
+        $this->loadDefaultView(['article'=>$idProduct, 'baskets'=>$baskets]);
+    }
+
+    #[Route ('basket/addToo/{idProduct}', name:'addBasketSpecial')] // ajoute au panier spécifique
+    public function addBasketSpecial($idProduct){
+        $idBasket = URequest::post("basketselected"); // recupérer du form le selected
         $basket = DAO::getById(Basket::class, $idBasket, false);
         $article = DAO::getById(Product::class, $idProduct, false);
         $basketDetail = new Basketdetail();
         $basketDetail->setProduct($article);
         $basketDetail->setBasket($basket);
         $basketDetail->setQuantity(1);
-        UResponse::header('location', '/'.Router::path('store'));
+        DAO::save($basketDetail);
+        UResponse::header('location', '/'.Router::path('basketid', [$idBasket]));
     }
 }

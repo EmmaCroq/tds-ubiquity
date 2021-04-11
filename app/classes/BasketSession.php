@@ -17,14 +17,11 @@ class BasketSession
         $this->basket = $basket;
     }
 
-
-    public function addProduct($article, $quantity)
+    public function addProduct($article, $quantity, $basket)
     {
-        if(DAO::getOne(Basketdetail::class,'idProduct = ?',false,[$article->getId()])){
-            $this->jslog("Il y a déjà un produit");
+        if(DAO::getOne(Basketdetail::class,'idBasket = ? and idProduct = ?',false,[$basket->getId(), $article->getId()])){
+            echo "Il y a déjà un produit de ce type dans votre panier";
         }else{
-            $this->jslog("Ajouter".$article->getName(). "le produit dans ". $quantity);
-
             $basketDetail = new Basketdetail();
             $basketDetail->setBasket($this->basket);
             echo '<pre>';
@@ -34,6 +31,12 @@ class BasketSession
             $basketDetail->setQuantity($quantity);
             DAO::save($basketDetail);
         }
+    }
+
+    public function getId()
+    {
+        $baskets = DAO::getById(Basket::class, $this->idBasket, ['basketdetails.product']);
+        return $baskets->getId();
     }
 
     public function getProducts()

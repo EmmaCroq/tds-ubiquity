@@ -1,16 +1,30 @@
 <!--View associated to basketDefault action of MainController controller -->
+<h1>Mon panier</h1>
 <div class="ui grid ">
     <div class="ui wide column">
-        <div class="ui top attached header">Mon Panier</div>
+        <div class="ui top attached header"><h3>Mes articles</h3></div>
         <div class="ui attached segment">
-            <ul>
+            <form id="frmBasket" name="frmBasket">
                 {% for prod in products %}
-                    <li>{{ prod.product.name }} | {{ prod.quantity }}</li>
+                <div class="ui list">
+                    <i class="angle double right icon"></i>
+                    <span>{{ prod.product.name }}</span>
+                    <input type="hidden" name="id[]" value="{{ prod.product.id }}">
+                    <input type="number" name="quantity[]" min="0" max="100" value="{{ prod.quantity }}">
+                    <a type="submit" class="ui button small right floated" href="{{ path('confirmQuantity')}}">Confirmer la quantité</a>
+                </div>
                 {% endfor %}
-            </ul>
+            </form>
         </div>
-        Prix : {{ fullPrice }}
-        Remise : {{ totalDiscount }}
-        Quantité : {{ quantity }}
+        <div class="ui segment">
+            <div claas="ui segment" id="toUpdate">
+                <div class="ui list">
+                    <p>Quantité : {{ quantity }}</p>
+                    <p>Réduction : {{ totalDiscount }}</p>
+                    <p>Prix total : {{ fullPrice }} €</p>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</div><br>
+<a href="{{ path('baskets')}}" class="ui button right floated">Voir les paniers</a>

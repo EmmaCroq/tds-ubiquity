@@ -46,16 +46,32 @@ class MyAuth extends \Ubiquity\controllers\auth\AuthController{
     protected function _connect() {
         if(URequest::isPost()){
             $email=URequest::post($this->_getLoginInputName());
-            if($email!=null) {
-                $password = URequest::post($this->_getPasswordInputName());
+            if($email != null){
+                $password=URequest::post($this->_getPasswordInputName());
                 $user = DAO::getOne(User::class, 'email= ?', false, [$email]);
-                if(isset($user) && $user->getPassword() == $password) { // login et mot de passe obligatoire
+                if(isset($user) && $user->getPassword() == $password) {
                     USession::set('idUser', $user->getId());
-                    $BasketSession = new BasketSession("_current_", $user);
-                    USession::set('defaultBasket', $BasketSession);
-                    return $user;
+                    $basket = DAO::getOne(Basket::class,'name = ?',false,['_default']);
+                    if(!$basket){
+                        $basket = new Basket();
+                        $basket->setName('_default');
+                        $basket->setUser($user);
+                        if(DAO::save($basket)){
+                            $BasketSession = new BasketSession(DAO::getOne(Basket::class,'name = ?',false,['_default']));
+                            USession::set('defaultBasket', $BasketSession);
+                            return $user;
+                        }else{
+                            echo "error";
+                        }
+                    }else{
+                        $BasketSession = new BasketSession($basket);
+                        USession::set('defaultBasket', $BasketSession);
+                        return $user;
+                    }
+
                 }
             }
+            return ;
         }
         return;
     }
