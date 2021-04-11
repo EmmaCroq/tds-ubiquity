@@ -19,7 +19,7 @@ class BasketSession
 
     public function addProduct($article, $quantity, $basket)
     {
-        if(DAO::getOne(Basketdetail::class,'idBasket = ? and idProduct = ?',false,[$basket->getId(), $article->getId()])){ // ou $this->idBasket
+        if(DAO::getOne(Basketdetail::class,'idBasket = ? and idProduct = ?',false,[$basket->getId(), $article->getId()])){
             echo "Il y a déjà un produit de ce type dans votre panier";
         }else{
             $basketDetail = new Basketdetail();
@@ -82,11 +82,30 @@ class BasketSession
     public function deleteAnArticle($id)
     {
         $prod = DAO::getOne(Basketdetail::class,'idBasket = ? and idProduct = ?',false, [$this->idBasket, $id]);
-        if(DAO::remove($prod)){
-            return "deleted";
+        if(DAO::remove($prod)) {
+            return "element deleted";
         }else{
             return -1;
         }
+    }
+
+    public function clearBasket()
+    {
+        $baskets = DAO::getById(Basket::class, $this->idBasket, ['basketdetails.product']);
+        $basketDetails = $baskets->getBasketdetails();
+        if($basketDetails) {
+            foreach ($basketDetails as $b){
+                DAO::remove($b->getProduct());
+            }
+            return "all clear";
+        }else{
+            return -1;
+        }
+    }
+
+    public function finalPrice($a, $b){
+        $c = $a*$b;
+        return $c;
     }
 
     private function jslog($messageLog){

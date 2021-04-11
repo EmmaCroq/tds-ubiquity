@@ -35,6 +35,7 @@ class MainController extends ControllerBase{
         $listProm = DAO::getAll(Product::class, 'promotion< ?', false, [0]);
         $nbBaskets = DAO::count(Basket::class, 'idUser= ?', [USession::get("idUser")]);
         $nbprodSection = USession::get('sessionRecent');
+        $this->generateSlots();
         $this->loadDefaultView(['nbOrders'=>$nbOrders, 'listProm'=>$listProm, 'nbBaskets'=>$nbBaskets, 'nbprodSection'=>$nbprodSection]);
 	}
 
@@ -86,7 +87,7 @@ class MainController extends ControllerBase{
         $this->loadDefaultView(['article'=>$article, 'section'=>$section, 'listSection'=>$listsections, 'product'=>$product, 'productid'=>$productid]);
     }
 
-    #[Route ('Baskets', name:'baskets')] // affiche la liste des paniers créés
+    #[Route ('Baskets', name:'baskets')] // displays the list of baskets created
     public function listBaskets(){
         $baskets = DAO::getAll(Basket::class, 'idUser= ?', ['basketdetails'], [USession::get("idUser")]);
         $BasketSession = USession::get('defaultBasket');
@@ -97,7 +98,7 @@ class MainController extends ControllerBase{
         $this->loadDefaultView(['baskets'=>$baskets, 'products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
     }
 
-    #[Route ('newBasket', name:'newBasket')] // créer un nouveau panier
+    #[Route ('newBasket', name:'newBasket')] // create a new basket
     public function newBasket(){
         $baskets = DAO::getAll(Basket::class, 'idUser= ?', false, [USession::get("idUser")]);
         $data = URequest::post("name");
@@ -114,7 +115,7 @@ class MainController extends ControllerBase{
         $this->loadDefaultView(['baskets'=>$baskets]);
     }
 
-    #[Route ('confirmQuantity', name:'confirmQuantity')] // confirm la quantité du panier par défaut
+    #[Route ('confirmQuantity', name:'confirmQuantity')] // confirm the quantity of the default basket
     public function confirmQuantity(){
         $quantity = URequest::post("quantity[]");
         $newProduct = new Basketdetail();
@@ -123,7 +124,7 @@ class MainController extends ControllerBase{
         UResponse::header('location', '/'.Router::path('basketDefault'));
     }
 
-    #[Route ('Basket', name:'basket')] // affiche le panier par defaut
+    #[Route ('Basket', name:'basket')] // display the default basket
     public function basketDefault(){
         $BasketSession = USession::get('defaultBasket');
         $products = $BasketSession->getProducts();
@@ -133,7 +134,7 @@ class MainController extends ControllerBase{
         $this->loadDefaultView(['products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
     }
 
-    #[Route ('Basket/{idBasket}', name:'basketid')] // affiche le panier actuel
+    #[Route ('Basket/{idBasket}', name:'basketid')] // display the current basket and select it
     public function basketId($idBasket){
         $basket = DAO::getById(Basket::class, $idBasket, false);
         $basket = new BasketSession($basket);
@@ -141,7 +142,7 @@ class MainController extends ControllerBase{
         UResponse::header('location', '/'.Router::path('baskets'));
     }
 
-    #[Route ('basket/add/{idProduct}', name:'addBasket')] // ajoute au panier par défaut
+    #[Route ('basket/add/{idProduct}', name:'addBasket')] // add to cart by default
     public function addBasketDefault($idProduct){
         $article = DAO::getById(Product::class, $idProduct, false);
         $BasketSession = USession::get('defaultBasket');
@@ -149,13 +150,13 @@ class MainController extends ControllerBase{
         UResponse::header('location', '/'.Router::path('basket'));
     }
 
-    #[Route ('basket/addTo/{idProduct}', name:'addBasketSpec')] // permet de choisir dans quel panier mettre
+    #[Route ('basket/addTo/{idProduct}', name:'addBasketSpec')] // allows you to choose in which basket to put
     public function addBasketSpec($idProduct){
         $baskets = DAO::getAll(Basket::class, 'idUser= ?', ['basketdetails'], [USession::get("idUser")]);
         $this->loadDefaultView(['article'=>$idProduct, 'baskets'=>$baskets]);
     }
 
-    #[Route ('basket/addToo/{idProduct}', name:'addBasketSpecial')] // ajoute au panier spécifique
+    #[Route ('basket/addToo/{idProduct}', name:'addBasketSpecial')] // add to specific basket
     public function addBasketSpecial($idProduct){
         $idBasket = URequest::post("basketselected"); // recupérer du form le selected
         $basket = DAO::getById(Basket::class, $idBasket, false);
@@ -173,5 +174,46 @@ class MainController extends ControllerBase{
         $BasketSession = USession::get('defaultBasket');
         $BasketSession->deleteAnArticle($id);
         UResponse::header('location', '/'.Router::path('basket'));
+    }
+
+    #[Route(path: "clearBasket",name: "clearBasket")]
+    public function clearBasket(){
+        $BasketSession = USession::get('defaultBasket');
+        $BasketSession->clearBasket();
+        UResponse::header('location', '/'.Router::path('basket'));
+    }
+
+    #[Route(path: "basket/validate",name: "validationBasket")]
+    public function validationBasket()
+    {
+        $slots = DAO::getAll(Timeslot::class, 'full= ?', false, [0]);
+        //strftime( '%A %d %B', \strtotime($slots->getSlotDate()));
+        //(date( 'Hi', \strtotime($slots) )>'1300')?'Après-midi':'Matin';
+        //\setlocale(LC_ALL, 'fr-FR');
+        $BasketSession = USession::get('defaultBasket');
+        $fullPrice = $BasketSession->getTotalFullPrice();
+        $this->loadDefaultView(['slots'=>$slots, 'fullPrice'=>$fullPrice]);
+    }
+
+    #[Route(path: "basket/recap",name: "recap")] // the order Summary
+    public function recap()
+    {
+        $BasketSession = USession::get('defaultBasket');
+        $slots = DAO::getAll(Timeslot::class, 'full= ?', false, [0]);
+        $products = $BasketSession->getProducts();
+        $quantity = $BasketSession->getQuantity();
+        $totalDiscount = $BasketSession->getTotalDiscount();
+        $fullPrice = $BasketSession->getTotalFullPrice();
+        $BasketSession = USession::terminate();
+        $this->loadDefaultView(['slots'=>$slots, 'products'=>$products, 'fullPrice'=> $fullPrice, 'totalDiscount'=>$totalDiscount, 'quantity'=>$quantity]);
+    }
+
+    public function generateSlots($date=null){ // générer 1 mois de slots
+        $date??=date('Y-m-d', \strtotime('+1 months', \strtotime('NOW')));
+        $db=DAO::getDatabase();
+        $st=$db->prepareStatement('CALL timeslot_generation(?)');
+        if($st->execute([$date])){
+            echo "Timeslots générés";
+        };
     }
 }

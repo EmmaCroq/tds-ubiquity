@@ -1,5 +1,6 @@
-<!--View associated to basketDefault action of MainController controller -->
+<!--View associated to recap action of MainController controller -->
 <h1>Mon panier</h1>
+<div class="ui segment">
 <table class="ui table ">
     <thead>
     <tr>
@@ -7,7 +8,6 @@
         <th>Prix</th>
         <th>Quantité</th>
         <th>Montant</th>
-        <th> Modification <i class="angle double right icon"> </i> </th>
     </tr>
     </thead>
     <tbody>
@@ -22,30 +22,34 @@
                 <p>{{ prod.product.price }}</p>
             </td>
             <td data-label="Quantité">
-                <input type="hidden" name="id[]" value="{{ prod.product.id }}">
-                <input type="number" class="ui label" name="quantity[]" min="0" max="100" value="{{ prod.quantity }}" />
+                <p class="ui label" name="quantity[]">{{ prod.quantity }}</p>
             </td>
             <td data-label="Montant">
                 {{ prod.product.price }} <!-- ajax: modif in real time {{ prod.product.price }} * {{ prod.quantity }}-->
-            </td>
-            <td data-label="Modification">
-                <a href="{{ path('deleteProductFromBasket',[prod.product.id]) }}" class="ui red icon button small right floated"><i class="trash alternate icon"></i></a>
-                <input type="submit" href="{{ path('confirmQuantity')}}" class="ui button small right floated" value="Confirmer la quantité" />
             </td>
         </tr>
         {% endfor %}
     </form>
     </tbody>
 </table>
+</div>
 <div class="ui segment">
-    <div class="ui segment" id="toUpdate">
+    <div class="ui segment">
         <div class="ui list">
             <p>Quantité : {{ quantity }}</p>
             <p>Réduction : {{ totalDiscount }}</p>
             <p>Prix total : {{ fullPrice }} €</p>
         </div>
     </div>
+</div>
+<div class="ui segment">
+    <div class="ui segment">
+        <h4>Votre date et heure de retrait : </h4>
+        {{slot.getSlotDate}}
+    </div>
+</div>
+<div class="ui segment">
+    <h2>Merci pour votre commande ! N'oubliez pas la date et l'heure du rendez-vous ! A très bientôt !</h2>
 </div><br>
-<a href="{{ path('validationBasket') }}" class="ui green button right floated">Valider le panier</a>
-<a href="{{ path('clearBasket') }}" class="ui red button right floated">Vider le panier</a>
-<a href="{{ path('baskets')}}" class="ui button right floated">Voir les paniers</a>
+<a href="{{ path('store')}}" class="ui button right floated">Retour à l'accueil</a>
+

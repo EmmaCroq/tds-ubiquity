@@ -1,0 +1,20 @@
+<!--View associated to validationBasket action of MainController controller -->
+<form method="post" action="{{ path('recap') }}">
+    <div class="ui grid ">
+        <div class="ui wide column">
+            <div class="ui top attached header"><h3>Ma Commande</h3></div>
+            <div class="ui attached segment">
+                <p>Prix total de votre commande : <h3>{{ fullPrice }} €</h3></p> <br>
+                <select name="slot" id="pet-select">
+                    <option value="">A quel moment voulez-vous retirer votre commande ?</option>
+                    {% for slot in slots %}
+                    <option value="{{ slot.id }}">{{ slot.slotDate }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+        </div>
+    </div><br>
+    <input type="submit" class="ui green button right floated" value="Commander"/>
+    <a href="{{ path('basket') }}" class="ui red button right floated">Retour au panier</a>
+</form>
