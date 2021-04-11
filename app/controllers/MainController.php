@@ -167,4 +167,11 @@ class MainController extends ControllerBase{
         DAO::save($basketDetail);
         UResponse::header('location', '/'.Router::path('basketid', [$idBasket]));
     }
+
+    #[Route(path: "deleteProductFromBasket/{id}",name: "deleteProductFromBasket")]
+    public function deleteProductFromBasket($id){
+        $BasketSession = USession::get('defaultBasket');
+        $BasketSession->deleteAnArticle($id);
+        UResponse::header('location', '/'.Router::path('basket'));
+    }
 }
